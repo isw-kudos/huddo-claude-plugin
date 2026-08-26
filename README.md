@@ -1,5 +1,9 @@
 # Huddo Claude Code plugins
 
+[![Validate plugins](https://github.com/isw-kudos/huddo-claude-plugin/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/isw-kudos/huddo-claude-plugin/actions/workflows/validate.yml)
+[![Workflow Security (zizmor)](https://github.com/isw-kudos/huddo-claude-plugin/actions/workflows/zizmor.yml/badge.svg?branch=main)](https://github.com/isw-kudos/huddo-claude-plugin/actions/workflows/zizmor.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 The official [Claude Code](https://code.claude.com) plugin marketplace for
 [Huddo Boards](https://boards.huddo.com).
 
