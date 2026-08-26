@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "huddo-boards": {
+      "type": "http",
+      "url": "https://boards.api.huddo.com/mcp"
+    }
+  }
+}

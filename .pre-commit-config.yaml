@@ -1,0 +1,19 @@
+# Optional local hooks: `pre-commit install` after cloning.
+# CI enforces the same checks (validate.yml + zizmor.yml) regardless.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: zizmor
+        name: zizmor (workflow security)
+        language: system
+        entry: uvx zizmor@1.29.0 --offline --persona regular
+        files: ^\.github/workflows/
+        pass_filenames: true

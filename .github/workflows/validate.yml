@@ -1,0 +1,54 @@
+# Validates the marketplace manifest and every plugin with the Claude Code CLI,
+# plus a plain JSON well-formedness pass that needs no external tooling.
+name: Validate plugins
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.run_id || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate manifests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check JSON well-formedness
+        run: |
+          set -euo pipefail
+          find . -name '*.json' -not -path './.git/*' -print0 \
+            | xargs -0 -n1 sh -c 'jq empty "$0" && echo "ok: $0"'
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      # No lockfile exists in this repo (nothing here builds), so the CLI is
+      # installed ad hoc — mitigated by pinning the exact version.
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code@2.1.246 # zizmor: ignore[adhoc-packages]
+
+      - name: Validate marketplace
+        run: claude plugin validate .
+
+      - name: Validate each plugin
+        run: |
+          set -euo pipefail
+          for plugin in plugins/*/; do
+            claude plugin validate "$plugin"
+          done
