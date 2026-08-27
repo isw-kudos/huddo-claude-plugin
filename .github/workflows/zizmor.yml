@@ -42,3 +42,10 @@ jobs:
           advanced-security: false # no GHAS/SARIF upload
           annotations: true # inline annotations + fail CI (needs advanced-security: false)
           persona: regular
+          # Online audits resolve every `uses:` against the GitHub API, and
+          # required-checks.yml references the PRIVATE isw-kudos/github-actions
+          # repo, which the default repo-scoped GITHUB_TOKEN cannot read —
+          # zizmor treats an unreadable repo as fatal and aborts the audit.
+          # Offline keeps all static audits; refs stay trustworthy because
+          # every `uses:` is pinned to a commit SHA (Renovate-maintained).
+          online-audits: false

@@ -1,0 +1,55 @@
+# Single-context aggregation gate for the branch ruleset.
+#
+# zizmor.yml only triggers on PRs that touch workflow files, so its "Audit
+# workflows" context is absent on most PRs. If that context were marked
+# required directly, those PRs would deadlock forever (the check never posts).
+# This job ALWAYS runs on every PR and polls the Checks API via the shared
+# isw-kudos/github-actions wait-for-required-checks action: a named check
+# passes the gate when it succeeded, was skipped, or never registered within
+# the grace window (not applicable to this PR); the gate fails if any named
+# check failed. The ruleset requires THIS context ("Required Checks"), not the
+# underlying checks. Same pattern as irt-flight-manager's gate.
+#
+# Trigger is pull_request_target so the gate definition is loaded from the
+# base branch: a PR cannot disable, rename, or neuter it by editing this file
+# in its own diff. No code is checked out and no PR code runs — the shared
+# action (pinned by commit SHA) only reads the Checks API for the PR head SHA
+# from the event payload. Do NOT add a checkout of the PR head ref or any
+# `run:` of PR-supplied code to this workflow.
+name: Required Checks
+
+on:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] base-branch gate; no checkout, no PR code executed (see header)
+    branches:
+      - main
+
+# github.ref is the BASE ref under pull_request_target, so key concurrency on
+# the PR number + head SHA — otherwise every PR shares one group. No
+# cancel-in-progress: a cancelled duplicate would post a non-passing
+# "Required Checks" run on the SHA and block the merge.
+concurrency:
+  group: required-checks-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  required-checks:
+    name: Required Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      checks: read # read check-runs on the PR head SHA
+    steps:
+      - name: Wait for required checks
+        uses: isw-kudos/github-actions/.github/actions/wait-for-required-checks@46a4e6dfe8bf5c9e0290ac5c1f21c85437c1036c # wait-for-required-checks-v1.2.0
+        with:
+          # Exact check-run names (status contexts). Add new gating checks
+          # here as workflows grow.
+          required-checks: |
+            Validate manifests
+            Audit workflows
+          # Absent-after-grace => not-applicable (the source workflow's paths
+          # filter excluded this PR). High enough to absorb GitHub's queue
+          # latency before a genuinely-pending check registers its check-run.
+          grace-seconds: "150"
