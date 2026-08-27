@@ -1,7 +1,7 @@
 {
   "name": "huddo-boards",
   "description": "Huddo Boards MCP integration — read and update Huddo kanban boards (boards, lists, cards, assignments, comments) from Claude Code.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "ISW"
   },
@@ -15,5 +15,13 @@
     "tasks",
     "mcp",
     "project-management"
-  ]
+  ],
+  "userConfig": {
+    "api_url": {
+      "type": "string",
+      "title": "Boards MCP endpoint",
+      "description": "MCP endpoint of your Boards deployment. Keep the default for Huddo cloud; point it at your own server for a self-hosted deployment.",
+      "default": "https://boards.api.huddo.com/mcp"
+    }
+  }
 }

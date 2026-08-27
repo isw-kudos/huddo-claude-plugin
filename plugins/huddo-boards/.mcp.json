@@ -2,7 +2,10 @@
   "mcpServers": {
     "huddo-boards": {
       "type": "http",
-      "url": "https://boards.api.huddo.com/mcp"
+      "url": "${user_config.api_url}",
+      "oauth": {
+        "clientId": "boards-mcp"
+      }
     }
   }
 }

@@ -6,7 +6,8 @@ description: Work with Huddo Boards (kanban) through the huddo-boards MCP server
 # Huddo Boards
 
 Huddo Boards is a collaborative task management platform. The `huddo-boards` MCP
-server, bundled with this plugin, talks to `https://boards.api.huddo.com/mcp` and
+server, bundled with this plugin, talks to the configured Boards deployment
+(Huddo cloud by default; self-hosted deployments set their own endpoint) and
 authenticates with OAuth.
 
 ## Data model

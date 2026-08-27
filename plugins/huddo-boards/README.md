@@ -30,6 +30,19 @@ Or try it locally without installing:
 claude --plugin-dir ./plugins/huddo-boards
 ```
 
+## Self-hosted Boards deployments
+
+The MCP endpoint is a plugin setting (`userConfig`), defaulting to Huddo cloud
+(`https://boards.api.huddo.com/mcp`). With the default the plugin works with
+zero configuration. If your organisation runs its own Boards deployment, set
+**Boards MCP endpoint** when Claude Code prompts on plugin enable (or later via
+`/plugin`).
+
+The OAuth client id is fixed at `boards-mcp`: Claude Code does not substitute
+configuration values inside the `oauth` block, so it cannot be made a setting.
+A self-hosted deployment must register the `boards-mcp` OAuth client (a public
+PKCE client with `http://localhost:*/callback` redirects) in its user service.
+
 ## Authenticate
 
 The server uses OAuth. In an interactive session, run `/mcp`, pick
