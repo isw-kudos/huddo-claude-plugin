@@ -45,3 +45,5 @@ plugins/<name>/                   # one directory per plugin
   pinned to commit SHAs and kept current by Renovate.
 - Optional local hooks: `pre-commit install` (needs
   [pre-commit](https://pre-commit.com) and [uv](https://docs.astral.sh/uv/)).
+
+> Merges to main require the green "Required Checks" context (repository ruleset).
