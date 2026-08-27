@@ -1,38 +1,16 @@
-# Single-context aggregation gate for the branch ruleset.
+# Aggregation gate: the branch ruleset requires this single context instead of
+# the individual (paths-filtered) checks, which would deadlock PRs they skip.
+# The vendored action polls the Checks API; absent-after-grace = not applicable.
 #
-# zizmor.yml only triggers on PRs that touch workflow files, so its "Audit
-# workflows" context is absent on most PRs. If that context were marked
-# required directly, those PRs would deadlock forever (the check never posts).
-# This job ALWAYS runs on every PR and polls the Checks API via the vendored
-# ./.github/actions/wait-for-required-checks action: a named check passes the
-# gate when it succeeded, was skipped, or never registered within the grace
-# window (not applicable to this PR); the gate fails if any named check
-# failed. The ruleset requires THIS context ("Required Checks"), not the
-# underlying checks. Same pattern as irt-flight-manager's gate.
-#
-# The action is vendored from the private isw-kudos/github-actions repo
-# (tag wait-for-required-checks-v1.2.0): this repo is PUBLIC, and GitHub only
-# shares a private repo's actions with private/internal repos, so the shared
-# reference stopped resolving the moment this repo went public.
-#
-# Trigger is pull_request_target so both this workflow AND the vendored
-# action are loaded from the base branch: a PR cannot disable, rename, or
-# neuter the gate by editing them in its own diff. The checkout below pulls
-# the BASE branch (pull_request_target's default ref), never PR code, and the
-# action runs no PR code — it only reads the Checks API for the PR head SHA
-# from the event payload. Do NOT change the checkout to the PR head ref or
-# add any `run:` of PR-supplied code to this workflow.
+# pull_request_target loads the workflow and action from the BASE branch so a
+# PR cannot neuter the gate. Never check out or run PR code here.
 name: Required Checks
 
 on:
-  pull_request_target: # zizmor: ignore[dangerous-triggers] base-branch gate; no checkout, no PR code executed (see header)
+  pull_request_target: # zizmor: ignore[dangerous-triggers] base-branch gate; no PR code executed
     branches:
       - main
 
-# github.ref is the BASE ref under pull_request_target, so key concurrency on
-# the PR number + head SHA — otherwise every PR shares one group. No
-# cancel-in-progress: a cancelled duplicate would post a non-passing
-# "Required Checks" run on the SHA and block the merge.
 concurrency:
   group: required-checks-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}
   cancel-in-progress: false
@@ -45,11 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: read # checkout the base branch's vendored gate action
-      checks: read # read check-runs on the PR head SHA
+      contents: read
+      checks: read
     steps:
-      # pull_request_target checks out the BASE branch by default (trusted);
-      # sparse-checkout limits it to just the vendored action. No PR code.
       - name: Checkout base branch (gate action only)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -60,12 +36,7 @@ jobs:
       - name: Wait for required checks
         uses: ./.github/actions/wait-for-required-checks
         with:
-          # Exact check-run names (status contexts). Add new gating checks
-          # here as workflows grow.
           required-checks: |
             Validate manifests
             Audit workflows
-          # Absent-after-grace => not-applicable (the source workflow's paths
-          # filter excluded this PR). High enough to absorb GitHub's queue
-          # latency before a genuinely-pending check registers its check-run.
           grace-seconds: "150"
