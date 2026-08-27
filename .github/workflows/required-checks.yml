@@ -3,19 +3,25 @@
 # zizmor.yml only triggers on PRs that touch workflow files, so its "Audit
 # workflows" context is absent on most PRs. If that context were marked
 # required directly, those PRs would deadlock forever (the check never posts).
-# This job ALWAYS runs on every PR and polls the Checks API via the shared
-# isw-kudos/github-actions wait-for-required-checks action: a named check
-# passes the gate when it succeeded, was skipped, or never registered within
-# the grace window (not applicable to this PR); the gate fails if any named
-# check failed. The ruleset requires THIS context ("Required Checks"), not the
+# This job ALWAYS runs on every PR and polls the Checks API via the vendored
+# ./.github/actions/wait-for-required-checks action: a named check passes the
+# gate when it succeeded, was skipped, or never registered within the grace
+# window (not applicable to this PR); the gate fails if any named check
+# failed. The ruleset requires THIS context ("Required Checks"), not the
 # underlying checks. Same pattern as irt-flight-manager's gate.
 #
-# Trigger is pull_request_target so the gate definition is loaded from the
-# base branch: a PR cannot disable, rename, or neuter it by editing this file
-# in its own diff. No code is checked out and no PR code runs — the shared
-# action (pinned by commit SHA) only reads the Checks API for the PR head SHA
-# from the event payload. Do NOT add a checkout of the PR head ref or any
-# `run:` of PR-supplied code to this workflow.
+# The action is vendored from the private isw-kudos/github-actions repo
+# (tag wait-for-required-checks-v1.2.0): this repo is PUBLIC, and GitHub only
+# shares a private repo's actions with private/internal repos, so the shared
+# reference stopped resolving the moment this repo went public.
+#
+# Trigger is pull_request_target so both this workflow AND the vendored
+# action are loaded from the base branch: a PR cannot disable, rename, or
+# neuter the gate by editing them in its own diff. The checkout below pulls
+# the BASE branch (pull_request_target's default ref), never PR code, and the
+# action runs no PR code — it only reads the Checks API for the PR head SHA
+# from the event payload. Do NOT change the checkout to the PR head ref or
+# add any `run:` of PR-supplied code to this workflow.
 name: Required Checks
 
 on:
@@ -39,10 +45,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
+      contents: read # checkout the base branch's vendored gate action
       checks: read # read check-runs on the PR head SHA
     steps:
+      # pull_request_target checks out the BASE branch by default (trusted);
+      # sparse-checkout limits it to just the vendored action. No PR code.
+      - name: Checkout base branch (gate action only)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/actions/wait-for-required-checks
+          sparse-checkout-cone-mode: false
+
       - name: Wait for required checks
-        uses: isw-kudos/github-actions/.github/actions/wait-for-required-checks@46a4e6dfe8bf5c9e0290ac5c1f21c85437c1036c # wait-for-required-checks-v1.2.0
+        uses: ./.github/actions/wait-for-required-checks
         with:
           # Exact check-run names (status contexts). Add new gating checks
           # here as workflows grow.
