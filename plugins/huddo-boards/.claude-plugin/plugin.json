@@ -1,7 +1,7 @@
 {
   "name": "huddo-boards",
   "description": "Huddo Boards MCP integration — read and update Huddo kanban boards (boards, lists, cards, assignments, comments) from Claude Code.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "ISW"
   },
