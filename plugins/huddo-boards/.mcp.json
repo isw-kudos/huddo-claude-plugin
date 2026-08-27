@@ -4,7 +4,7 @@
       "type": "http",
       "url": "${user_config.api_url}",
       "oauth": {
-        "clientId": "${user_config.oauth_client_id}"
+        "clientId": "boards-mcp"
       }
     }
   }

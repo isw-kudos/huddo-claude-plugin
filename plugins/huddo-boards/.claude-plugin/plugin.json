@@ -22,12 +22,6 @@
       "title": "Boards MCP endpoint",
       "description": "MCP endpoint of your Boards deployment. Keep the default for Huddo cloud; point it at your own server for a self-hosted deployment.",
       "default": "https://boards.api.huddo.com/mcp"
-    },
-    "oauth_client_id": {
-      "type": "string",
-      "title": "OAuth client id",
-      "description": "OAuth client id registered with your Boards deployment. Keep the default for Huddo cloud.",
-      "default": "boards-mcp"
     }
   }
 }
