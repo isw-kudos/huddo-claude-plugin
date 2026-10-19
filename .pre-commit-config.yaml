@@ -14,6 +14,6 @@ repos:
       - id: zizmor
         name: zizmor (workflow security)
         language: system
-        entry: uvx zizmor@1.29.0 --offline --persona regular
+        entry: uvx zizmor@1.30.1 --offline --persona regular
         files: ^\.github/workflows/
         pass_filenames: true
