@@ -26,15 +26,10 @@ jobs:
       contents: read
       checks: read
     steps:
-      - name: Checkout base branch (gate action only)
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          sparse-checkout: .github/actions/wait-for-required-checks
-          sparse-checkout-cone-mode: false
-
+      # `$/` resolves the action at the running (base-branch) commit with no
+      # checkout, so no runtime workspace state can substitute the gate.
       - name: Wait for required checks
-        uses: ./.github/actions/wait-for-required-checks
+        uses: $/.github/actions/wait-for-required-checks
         with:
           required-checks: |
             Validate manifests
