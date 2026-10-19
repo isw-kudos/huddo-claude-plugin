@@ -1,9 +1,9 @@
 # Aggregation gate: the branch ruleset requires this single context instead of
 # the individual (paths-filtered) checks, which would deadlock PRs they skip.
-# The vendored action polls the Checks API; absent-after-grace = not applicable.
+# The shared action polls the Checks API; absent-after-grace = not applicable.
 #
-# pull_request_target loads the workflow and action from the BASE branch so a
-# PR cannot neuter the gate. Never check out or run PR code here.
+# pull_request_target runs the workflow from the BASE branch and the action is
+# SHA-pinned, so a PR cannot neuter the gate. Never check out or run PR code here.
 name: Required Checks
 
 on:
@@ -23,19 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: read
-      checks: read
+      checks: read # the action polls the Checks API for the required contexts
     steps:
-      - name: Checkout base branch (gate action only)
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          sparse-checkout: .github/actions/wait-for-required-checks
-          sparse-checkout-cone-mode: false
-
       - name: Wait for required checks
-        uses: ./.github/actions/wait-for-required-checks
+        uses: isw-kudos/github-actions/.github/actions/wait-for-required-checks@d956786c03927bdcb70641a3f3adb38b0600a7cd # wait-for-required-checks-v1.3.0
         with:
+          # Every check listed here MUST run on draft PRs. `skipped` and
+          # "absent after grace" both count as a pass, and ready_for_review
+          # does not re-trigger this gate, so a draft-gated check would let a
+          # PR merge with that check never having executed.
           required-checks: |
             Validate manifests
             Audit workflows
