@@ -1,8 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests"
+    "local>isw-kudos/renovate-config",
+    "local>isw-kudos/renovate-config:gha"
   ],
-  "labels": ["dependencies"]
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track the zizmor CLI pin in the local pre-commit hook (`uvx zizmor@X.Y.Z`) as zizmorcore/zizmor, so it lands in the org Zizmor group and moves in lockstep with the zizmor.yml `version:` pin and the zizmor-action release. The org :gha preset only covers .githooks/pre-commit and the Claude hook, not a pre-commit framework `entry:`.",
+      "managerFilePatterns": ["/^\\.pre-commit-config\\.yaml$/"],
+      "matchStrings": ["uvx zizmor@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "zizmorcore/zizmor",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v?(?<version>.+)$"
+    }
+  ]
 }
