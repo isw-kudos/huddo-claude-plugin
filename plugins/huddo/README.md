@@ -47,7 +47,9 @@ The OAuth client id is fixed at `huddo-mcp`: Claude Code does not substitute
 configuration values inside the `oauth` block, so it cannot be made a setting.
 The install's user service must register the `huddo-mcp` OAuth client (a
 public PKCE client with `http://localhost/callback` in its redirect URLs) in
-`OAUTH_CLIENTS`.
+`OAUTH_CLIENTS`. Register that URL as written, with no port: Claude Code
+listens on a random local port, and the user service accepts any port on a
+registered loopback redirect.
 
 ## Authenticate
 
