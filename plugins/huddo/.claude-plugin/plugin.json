@@ -1,6 +1,6 @@
 {
   "name": "huddo",
-  "description": "Huddo collab MCP integration: search and work with Huddo Wikis, Ideas, Spaces, Discussions, Links and notifications from Claude Code.",
+  "description": "Huddo MCP integration: search and work with Huddo Wikis, Ideas, Spaces, Discussions, Links and notifications from Claude Code.",
   "version": "0.1.0",
   "author": {
     "name": "ISW"
@@ -10,7 +10,6 @@
   "license": "Apache-2.0",
   "keywords": [
     "huddo",
-    "collab",
     "wikis",
     "ideas",
     "spaces",
@@ -21,7 +20,7 @@
     "api_url": {
       "type": "string",
       "title": "Huddo MCP endpoint",
-      "description": "MCP endpoint of your Huddo collab install: your HUDDO_URI followed by /mcp, for example https://connections.example.com/huddo/mcp.",
+      "description": "MCP endpoint of your Huddo install: your HUDDO_URI followed by /mcp, for example https://connections.example.com/huddo/mcp.",
       "required": true
     }
   }

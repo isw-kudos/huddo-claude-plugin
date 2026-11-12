@@ -1,9 +1,9 @@
 # huddo plugin
 
-Claude Code plugin for the Huddo collab suite (Wikis, Ideas, Spaces,
+Claude Code plugin for the Huddo suite (Wikis, Ideas, Spaces,
 Discussions, Links, Search and notifications). It bundles the Huddo MCP
 server that the `huddo` Helm chart deploys, plus a skill that teaches Claude
-the collab data model and how to use the tools efficiently.
+the Huddo data model and how to use the tools efficiently.
 
 This is a separate server from Huddo Boards. For kanban boards, install the
 [huddo-boards](../huddo-boards/) plugin.
@@ -14,7 +14,7 @@ This is a separate server from Huddo Boards. For kanban boards, install the
   sign-in. Tools cover search, people, the inbox, links, wikis, ideas,
   discussions and spaces, plus cross-app tools (resolve a URL, comment on
   anything, related content, my week).
-- **Skill `huddo:collab`**: data-model and working-style guidance so Claude
+- **Skill `huddo:huddo`**: data-model and working-style guidance so Claude
   reads cheaply and writes safely.
 
 ## Install
@@ -37,7 +37,7 @@ claude --plugin-dir ./plugins/huddo
 
 ## Configure the endpoint
 
-Every collab install runs on its own host, so there is no default endpoint.
+Every Huddo install runs on its own host, so there is no default endpoint.
 Set **Huddo MCP endpoint** when Claude Code prompts on plugin enable (or later
 via `/plugin`). The value is the install's `HUDDO_URI` followed by `/mcp`, for
 example `https://connections.example.com/huddo/mcp`. If the install sets
@@ -64,4 +64,4 @@ unusable.
 The plugin manifest is [.claude-plugin/plugin.json](.claude-plugin/plugin.json);
 bump `version` when the skill or server config changes so installed copies
 pick up updates. Keep the skill's tool map in sync with the tools the MCP
-server registers (the `apps/mcp` service in the collab codebase).
+server registers (the `apps/mcp` service in the Huddo codebase).

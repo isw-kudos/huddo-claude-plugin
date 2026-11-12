@@ -1,11 +1,11 @@
 ---
-name: collab
-description: Work with the Huddo collab apps (Wikis, Ideas, Spaces, Discussions, Links, Search, notifications) through the huddo MCP server: search content, read and write wiki pages, submit and vote on ideas, comment on anything, find spaces and people, triage the inbox. Use when the user mentions a Huddo wiki, page, idea lab, idea, space, saved link, or a Huddo URL, or asks what changed or what needs their attention in Huddo. Not for Huddo Boards (kanban); that is the huddo-boards plugin.
+name: huddo
+description: Work with the Huddo apps (Wikis, Ideas, Spaces, Discussions, Links, Search, notifications) through the huddo MCP server: search content, read and write wiki pages, submit and vote on ideas, comment on anything, find spaces and people, triage the inbox. Use when the user mentions a Huddo wiki, page, idea lab, idea, space, saved link, or a Huddo URL, or asks what changed or what needs their attention in Huddo. Not for Huddo Boards (kanban); that is the huddo-boards plugin.
 ---
 
-# Huddo collab
+# Huddo
 
-The Huddo collab suite is Wikis, Ideas, Spaces, Discussions, Links, Search and
+The Huddo suite is Wikis, Ideas, Spaces, Discussions, Links, Search and
 the notification inbox, usually installed alongside HCL Connections. The
 `huddo` MCP server, bundled with this plugin, talks to the configured install
 and authenticates with OAuth. Every call runs as the signed-in user, so the

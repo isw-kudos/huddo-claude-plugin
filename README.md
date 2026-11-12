@@ -5,7 +5,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 The official [Claude Code](https://code.claude.com) plugin marketplace for
-[Huddo Boards](https://boards.huddo.com) and the Huddo collab suite (Wikis,
+[Huddo Boards](https://boards.huddo.com) and the Huddo suite (Wikis,
 Ideas, Spaces, Discussions, Links).
 
 ## Plugins
@@ -13,7 +13,7 @@ Ideas, Spaces, Discussions, Links).
 | Plugin | What it does |
 |--------|--------------|
 | [huddo-boards](plugins/huddo-boards/) | Bundles the Huddo Boards MCP server (boards, lists, cards, assignments, comments) with a skill that teaches Claude the Boards data model. |
-| [huddo](plugins/huddo/) | Bundles the Huddo collab MCP server (search, wikis, ideas, spaces, discussions, links, inbox) with a skill that teaches Claude the collab data model. |
+| [huddo](plugins/huddo/) | Bundles the Huddo MCP server (search, wikis, ideas, spaces, discussions, links, inbox) with a skill that teaches Claude the Huddo data model. |
 
 ## Install
 
