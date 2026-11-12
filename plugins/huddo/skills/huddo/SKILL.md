@@ -28,8 +28,10 @@ and the tool sets its admin enables, so some tools below can be absent. Call
 - **Discussions** are the comment threads on pages, ideas and space feeds.
 - **Links** are the user's bookmarks (private or shared with the org).
 - Any Huddo URL names one object. `huddo_resolve` turns a URL into
-  `{app, type, ids, title, url}`, and every tool that takes a `url` goes
-  through the same resolver.
+  `{outcome, app, type, ids, title, url}`, and every tool that takes a `url`
+  goes through the same resolver. Only `outcome: "resolved"` names an object
+  a tool can act on; `parsed` was not confirmed and `unresolvable` names
+  nothing.
 
 ## Tool map
 
@@ -59,7 +61,7 @@ Wikis:
 | `wikis_get_page`, `wikis_get_page_history` | A page as Markdown; revisions and diffs. |
 | `wikis_recent_changes`, `wikis_property_report`, `wikis_list_templates` | What changed since a date; structured property records; templates. |
 | `wikis_create_wiki`, `wikis_create_page`, `wikis_import` | New wiki; new page from Markdown; import Markdown or a web page. |
-| `wikis_update_page`, `wikis_update_page_details`, `wikis_move_page` | Edit body (replace, or one section by heading); title and excerpt; re-parent. |
+| `wikis_update_page`, `wikis_update_page_details`, `wikis_move_page` | Edit body (`replace`, `replaceSection` by heading, or `appendSection` at the end; `publish` on an approvals wiki); title and excerpt; re-parent. |
 | `wikis_review_queue`, `wikis_review_action` | Pending approvals and flagged pages; approve, request changes, publish. |
 | `wikis_set_reaction` | Like or follow a page; follow a wiki. |
 
@@ -77,25 +79,37 @@ Discussions (the by-id tools behind `huddo_comment`): `discussions_get_thread`,
 `discussions_reply`, `discussions_edit_message`, `discussions_set` (react,
 mute, resolve).
 
-Deletes (`wikis_delete_page`, `wikis_delete_wiki`, `ideas_delete_idea`,
-`ideas_delete_lab`, `spaces_delete_space`, `links_delete_bookmark`,
-`discussions_delete_message`) need a confirm field that matches the object's
-title, name or URL.
+Deletes need a confirm field that matches the object:
+
+| Field | Tools |
+|-------|-------|
+| `confirmTitle` | `wikis_delete_page`, `ideas_delete_idea` |
+| `confirmName` | `wikis_delete_wiki`, `spaces_delete_space` |
+| `confirmQuestion` | `ideas_delete_lab` (the lab's question) |
+| `confirmUrl` | `links_delete_bookmark` |
+| `confirmFilename` | `huddo_delete_file` |
+
+`discussions_delete_message` has no confirm field: it takes the message's
+thread `discussionId` and refuses a message that is not in that thread.
 
 ## Working style
 
 - **URL first.** When the user pastes a Huddo URL, pass it to the tool that
   takes a `url` (or `huddo_resolve`) rather than searching for the object.
-- **Cheap-first.** Outputs are trimmed: lists default to 20 items, bodies are
-  capped by `maxChars` and say `truncated: true` when cut. Ask for more only
-  when the task needs it.
+- **Cheap-first.** Outputs are trimmed: lists are capped by `limit` (most
+  default to 20; `search_content` defaults to 10), bodies are capped by
+  `maxChars`, and a cut result says `truncated: true` (search results give
+  `total` instead). A short list is not
+  proof that nothing else matches. Ask for more only when the task needs it.
 - **Read before overwrite.** `wikis_update_page` takes `expectedSequence`
   from the page you read; prefer a section splice over replacing the whole
   body. Warn the user that an open editor session on the same page
   overwrites on save.
 - **Approvals.** On a wiki with approvals, a new page or revision stays
   unpublished until approved. Report the `next` field from a create result
-  so the user knows whether the page is live.
+  so the user knows whether the page is live. To publish a revision, use
+  `wikis_update_page` with `publish` (when the user owns it) or
+  `wikis_review_action`.
 - **Confirm destructive calls.** Ask before any delete, publish or full-body
   overwrite.
 - **Images.** Upload with `huddo_upload_file` and use the Markdown it returns;
