@@ -5,13 +5,15 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 The official [Claude Code](https://code.claude.com) plugin marketplace for
-[Huddo Boards](https://boards.huddo.com).
+[Huddo Boards](https://boards.huddo.com) and the Huddo suite (Wikis,
+Ideas, Spaces, Discussions, Links).
 
 ## Plugins
 
 | Plugin | What it does |
 |--------|--------------|
 | [huddo-boards](plugins/huddo-boards/) | Bundles the Huddo Boards MCP server (boards, lists, cards, assignments, comments) with a skill that teaches Claude the Boards data model. |
+| [huddo](plugins/huddo/) | Bundles the Huddo MCP server (search, wikis, ideas, spaces, discussions, links, inbox) with a skill that teaches Claude the Huddo data model. |
 
 ## Install
 
@@ -19,11 +21,19 @@ The official [Claude Code](https://code.claude.com) plugin marketplace for
 claude plugin marketplace add isw-kudos/huddo-claude-plugin
 ```
 
+Install either plugin, or both (they are separate MCP servers):
+
 ```bash
 claude plugin install huddo-boards@huddo
 ```
 
-Then run `/mcp` in Claude Code and sign in to `huddo-boards` (OAuth).
+```bash
+claude plugin install huddo@huddo
+```
+
+The `huddo` plugin asks for your install's MCP endpoint (for example
+`https://connections.example.com/huddo/mcp`) when it is enabled. Then run
+`/mcp` in Claude Code and sign in to each server (OAuth).
 
 ## Repository layout
 

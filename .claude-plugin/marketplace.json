@@ -1,6 +1,6 @@
 {
   "name": "huddo",
-  "description": "Official Claude Code plugins for Huddo Boards.",
+  "description": "Official Claude Code plugins for Huddo Boards and the Huddo suite.",
   "owner": {
     "name": "ISW",
     "url": "https://boards.huddo.com"
@@ -10,6 +10,11 @@
       "name": "huddo-boards",
       "source": "./plugins/huddo-boards",
       "description": "Huddo Boards MCP integration — read and update Huddo kanban boards (boards, lists, cards, assignments, comments) from Claude Code."
+    },
+    {
+      "name": "huddo",
+      "source": "./plugins/huddo",
+      "description": "Huddo MCP integration: search and work with Huddo Wikis, Ideas, Spaces, Discussions, Links and notifications from Claude Code."
     }
   ]
 }

@@ -41,7 +41,10 @@ zero configuration. If your organisation runs its own Boards deployment, set
 The OAuth client id is fixed at `boards-mcp`: Claude Code does not substitute
 configuration values inside the `oauth` block, so it cannot be made a setting.
 A self-hosted deployment must register the `boards-mcp` OAuth client (a public
-PKCE client with `http://localhost:*/callback` redirects) in its user service.
+PKCE client with `http://localhost/callback` in its redirect URLs) in its user
+service's `OAUTH_CLIENTS`. Register that URL as written, with no port: Claude
+Code listens on a random local port, and the user service accepts any port on
+a registered loopback redirect.
 
 ## Authenticate
 
